@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Roomify | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>ROOMIFY</h2>
+        <p id="userRole"></p>
+
+        <nav>
+            <button onclick="showSection('dashboard')">Dashboard</button>
+            <button onclick="showSection('rooms')">Rooms</button>
+            <button onclick="showSection('customers')">Customers</button>
+            <button onclick="showSection('bookings')">Bookings</button>
+        </nav>
+
+        <button class="logout" onclick="logout()">Logout</button>
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="content">
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="section active">
+            <h1>Dashboard</h1>
+
+            <div class="cards">
+                <div class="card-sm">
+                    <h3>Total Rooms</h3>
+                    <p id="totalRooms">0</p>
+                </div>
+
+                <div class="card-sm">
+                    <h3>Total Customers</h3>
+                    <p id="totalCustomers">0</p>
+                </div>
+
+                <div class="card-sm">
+                    <h3>Total Bookings</h3>
+                    <p id="totalBookings">0</p>
+                </div>
+
+                <div class="card-sm">
+                    <h3>Monthly Revenue</h3>
+                    <p>₹1,20,000</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ROOMS -->
+        <section id="rooms" class="section">
+            <div class="section-header">
+                <h1>Rooms</h1>
+                <button id="addRoomBtn" onclick="openRoomForm()">+ Add Room</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Room No.</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>Available</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="roomsTableBody"></tbody>
+            </table>
+        </section>
+
+
+        <!-- CUSTOMERS -->
+        <section id="customers" class="section">
+            <div class="section-header">
+                <h1>Customers</h1>
+                <button id="addCustomerBtn" onclick="openCustomerForm()">+ Add Customer</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="customersTableBody"></tbody>
+            </table>
+        </section>
+
+
+        <!-- BOOKINGS -->
+        <section id="bookings" class="section">
+            <div class="section-header">
+                <h1>Bookings</h1>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Room</th>
+                        <th>Customer</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTableBody"></tbody>
+            </table>
+        </section>
+
+    </main>
+
+</div>
+
+
+
+
+<!-- ROOM MODAL -->
+<div id="roomModal" class="modal">
+    <div class="modal-content">
+        <h2 id="roomModalTitle">Add Room</h2>
+        <input type="hidden" id="roomId">
+
+        <input type="text" id="roomNumber" placeholder="Room Number">
+        <input type="text" id="roomType" placeholder="Room Type">
+        <input type="number" id="roomPrice" placeholder="Price">
+
+        <label>
+            <input type="checkbox" id="roomAvailable" checked> Available
+        </label>
+
+        <div class="modal-actions">
+            <button class="secondary" onclick="closeRoomForm()">Cancel</button>
+            <button onclick="saveRoom()">Save</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- CUSTOMER MODAL -->
+<div id="customerModal" class="modal">
+    <div class="modal-content">
+        <h2 id="customerModalTitle">Add Customer</h2>
+        <input type="hidden" id="customerId">
+
+        <input type="text" id="customerName" placeholder="Name">
+        <input type="email" id="customerEmail" placeholder="Email">
+        <input type="text" id="customerPhone" placeholder="Phone">
+
+        <div class="modal-actions">
+            <button class="secondary" onclick="closeCustomerForm()">Cancel</button>
+            <button onclick="saveCustomer()">Save</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- BOOKING MODAL -->
+<div id="bookingModal" class="modal">
+    <div class="modal-content booking-modal">
+
+        <div class="booking-header">
+            <div>
+                <h2>Book Room</h2>
+                <p id="bookingRoomLabel">Room —</p>
+            </div>
+            <span class="badge-pill" id="bookingRoomType">Type</span>
+        </div>
+
+        <div class="booking-body">
+
+            <div class="booking-price">
+                <span class="label">Price / night</span>
+                <span class="value" id="bookingRoomPrice">₹0</span>
+            </div>
+
+            <div class="inline-fields">
+                <div class="field">
+                    <label>Check-in</label>
+                    <input type="date" id="bookingCheckIn">
+                </div>
+
+                <div class="field">
+                    <label>Check-out</label>
+                    <input type="date" id="bookingCheckOut">
+                </div>
+            </div>
+
+            <div class="inline-fields">
+                <div class="field">
+                    <label>Guests</label>
+                    <select id="bookingGuests">
+                        <option value="1">1 Guest</option>
+                        <option value="2">2 Guests</option>
+                        <option value="3">3 Guests</option>
+                        <option value="4">4 Guests</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Status</label>
+                    <input type="text" value="BOOKED" disabled>
+                </div>
+            </div>
+
+            <div class="info-note" id="bookingAvailabilityNote"></div>
+
+        </div>
+
+        <div class="modal-actions">
+            <button class="secondary" onclick="closeBookingModal()">Cancel</button>
+            <button onclick="saveBooking()">Confirm Booking</button>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
